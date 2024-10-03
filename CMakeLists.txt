@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 project(simpleExamBrowser)
 
+add_subdirectory(src/guard)
+
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC OFF)
+set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 COMPONENTS
         Core
@@ -13,16 +16,22 @@ find_package(Qt6 COMPONENTS
         WebEngineWidgets
         REQUIRED)
 
+
+
 add_executable(simpleExamBrowser main.cpp
-        BrowserWindow.cpp
-        BrowserWindow.h)
+        resources.qrc
+        ui/browser.cpp
+        ui/browser.h
+        ui/browser.ui
+)
 
 target_link_libraries(simpleExamBrowser
         Qt::Core
         Qt::Gui
         Qt::Widgets
         Qt::WebEngineWidgets
-        )
+        guarder
+)
 
 if (WIN32)
     set(DEBUG_SUFFIX)
@@ -75,7 +84,7 @@ if (WIN32)
                 "${QT_INSTALL_PATH}/translations/qtwebengine_locales/en-US.pak"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/translations/qtwebengine_locales/")
     endif ()
-    foreach (QT_RESOURCES "icudtl.dat" "qtwebengine_devtools_resources.pak" "qtwebengine_resources.pak" "qtwebengine_resources_100p.pak" "qtwebengine_resources_200p.pak")
+    foreach (QT_RESOURCES "icudtl.dat" "qtwebengine_devtools_resources.pak" "qtwebengine_resources.pak" "qtwebengine_resources_100p.pak" "qtwebengine_resources_200p.pak" "v8_context_snapshot.bin" "v8_context_snapshot.debug.bin")
             add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy
                     "${QT_INSTALL_PATH}/resources/${QT_RESOURCES}"
