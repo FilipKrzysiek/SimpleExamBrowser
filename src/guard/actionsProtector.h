@@ -15,14 +15,14 @@ enum DetectedAction {
 };
 
 HHOOK hhkLowLevelKybd = NULL;
-void (*actionFunction)(enum DetectedAction action) = NULL;
+void (*actionFunction)(enum DetectedAction action, int keyCode) = NULL;
 
 __declspec(dllexport) void initKeyboardGuard();
 
-__declspec(dllexport) void setActionFunction(void (*action)(enum DetectedAction action));
+__declspec(dllexport) void setActionFunction(void (*action)(enum DetectedAction action, int keyCode));
 
 __declspec(dllexport) void deinitKeyboardGuard();
 
-LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK keyboardLowLevelHookProc(int nCode, WPARAM wParam, LPARAM lParam);
 
 #endif //GUARD_H

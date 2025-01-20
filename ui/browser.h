@@ -5,9 +5,11 @@
 #ifndef BROWSER_H
 #define BROWSER_H
 
+#include <QMessageBox>
 #include <qtimer.h>
 #include <QUrl>
 #include <QWidget>
+#include <thread>
 
 
 QT_BEGIN_NAMESPACE
@@ -41,6 +43,8 @@ private:
     QTimer updateTime;
     QUrl baseUrl;
     QVector<QWidget*> otherScreensWidget;
+    std::thread warningThread;
+    QMessageBox warningMessageBox = QMessageBox(this);
 
     int warningLevel = 0;
 
@@ -49,6 +53,10 @@ private:
     void setupIcons();
 
     void setupConnections();
+
+    void setupWarningWindow();
+
+    void showWarningWIndow();
 
 private slots:
     void updateDataTime();

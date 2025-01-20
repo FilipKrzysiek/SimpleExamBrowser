@@ -7,6 +7,7 @@
 #include "browser.h"
 
 #include <qscreen.h>
+#include <QWebEngineProfile>
 
 #include "ui_browser.h"
 
@@ -36,16 +37,17 @@ void Browser::setupWindowsGeometry() {
     auto allScreens = QApplication::screens();
 
     //TODO macro to enable adn disable it
-    // for (auto screen: allScreens) {
-    //     if (screen == primaryScreen) {
-    //         continue;
-    //     }
-    //
-    //     auto *widgetScreen = new QWidget();
-    //     widgetScreen->setGeometry(screen->geometry());
-    //     widgetScreen->show();
-    //     otherScreensWidget.push_back(widgetScreen);
-    // }
+    for (auto screen: allScreens) {
+        if (screen == primaryScreen) {
+            continue;
+        }
+
+        auto *widgetScreen = new QWidget();
+        widgetScreen->setGeometry(screen->geometry());
+        widgetScreen->setStyleSheet("background-color:#000");
+        widgetScreen->show();
+        otherScreensWidget.push_back(widgetScreen);
+    }
 }
 
 void Browser::loadUrl(const QString &url) {
@@ -69,6 +71,9 @@ void Browser::detectedForbiddenAction(enum DetectedAction action) {
     ++warningLevel;
 
     ui->warningLevel->setValue(warningLevel);
+
+    warningThread = std::thread(&Browser::showWarningWIndow, this);
+    warningThread.detach();
 }
 
 void Browser::closeEvent(QCloseEvent *event) {
@@ -87,6 +92,8 @@ void Browser::setupUi() {
 
     updateDataTime();
     setupIcons();
+
+    setupWarningWindow();
 }
 
 void Browser::setupIcons() {
@@ -100,6 +107,17 @@ void Browser::setupConnections() {
 
     connect(ui->reload, &QPushButton::clicked, ui->webView, &QWebEngineView::reload);
     connect(ui->homePage, &QPushButton::clicked, this, &Browser::openBaseUrlPage);
+}
+
+void Browser::setupWarningWindow() {
+    warningMessageBox.setWindowFlag(Qt::WindowStaysOnTopHint);
+    warningMessageBox.setText("Wykryto zabronioną akcję");
+    warningMessageBox.setWindowTitle("Wykryto zabronioną akcję");
+    warningMessageBox.setIcon(QMessageBox::Icon::Critical);
+}
+
+void Browser::showWarningWIndow() {
+    QMetaObject::invokeMethod(&warningMessageBox, &QMessageBox::show);
 }
 
 void Browser::updateDataTime() {

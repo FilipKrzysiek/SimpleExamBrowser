@@ -6,9 +6,9 @@
 
 #include <stdio.h>
 
-LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK keyboardLowLevelHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode < 0) {
-        printf("nCode less than 0\n");
+        // printf("nCode less than 0\n");
         return CallNextHookEx(NULL, nCode, wParam, lParam);
     }
 
@@ -18,20 +18,20 @@ LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     KBDLLHOOKSTRUCT* p = (KBDLLHOOKSTRUCT *)(lParam);
     if (wParam == WM_KEYDOWN) {
-        printf("Pressed: %lu, %lu\n", p->vkCode, p->flags);
+        // printf("Pressed: %lu, %lu\n", p->vkCode, p->flags);
 
         if (p->vkCode == VK_LWIN || p->vkCode == VK_RWIN) {
-            actionFunction(Super);
+            actionFunction(Super, p->vkCode);
             return 1;
         } else if (p->vkCode == VK_SNAPSHOT) {
-            actionFunction(ScreenShot);
+            actionFunction(ScreenShot, p->vkCode);
             return 1;
         }
     } else if (wParam == WM_SYSKEYDOWN) {
-        printf("Pressed: %lu, %lu\n", p->vkCode, p->flags);
+        // printf("Pressed: %lu, %lu\n", p->vkCode, p->flags);
 
         if (p->vkCode == VK_TAB && p->flags == LLKHF_ALTDOWN) {
-            actionFunction(WindowSwitch);
+            actionFunction(WindowSwitch, p->vkCode);
             return 1;
         }
     }
@@ -40,11 +40,11 @@ LRESULT CALLBACK keyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
 }
 
 __declspec(dllexport) void initKeyboardGuard() {
-    hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL, keyboardHookProc, NULL, 0);
+    hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL, keyboardLowLevelHookProc, NULL, 0);
     HHOOK test = hhkLowLevelKybd;
 }
 
-void setActionFunction(void(*action)(enum DetectedAction action)) {
+void setActionFunction(void(*action)(enum DetectedAction action, int keyCode)) {
     actionFunction = action;
 }
 
