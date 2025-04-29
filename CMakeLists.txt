@@ -1,28 +1,39 @@
 cmake_minimum_required(VERSION 3.16)
-project(simpleExamBrowser)
+project(simpleExamBrowser VERSION 0.1.0)
+
+add_subdirectory(src/guard)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC OFF)
+set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 COMPONENTS
+find_package(Qt6 REQUIRED COMPONENTS
         Core
         Gui
         Widgets
         WebEngineWidgets
-        REQUIRED)
+        WebEngineCore
+)
+
+
 
 add_executable(simpleExamBrowser main.cpp
-        BrowserWindow.cpp
-        BrowserWindow.h)
+        resources.qrc
+        ui/browser.cpp
+        ui/browser.h
+        ui/browser.ui
+)
 
 target_link_libraries(simpleExamBrowser
         Qt::Core
         Qt::Gui
         Qt::Widgets
         Qt::WebEngineWidgets
-        )
+        Qt::WebEngineCore
+        guarder
+)
 
 if (WIN32)
     set(DEBUG_SUFFIX)
@@ -45,27 +56,28 @@ if (WIN32)
                 "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/")
     endif ()
-    if (EXISTS "${QT_INSTALL_PATH}/plugins/styles/qwindowsvistastyle${DEBUG_SUFFIX}.dll")
+    if (EXISTS "${QT_INSTALL_PATH}/plugins/styles/qmodernwindowsstyle${DEBUG_SUFFIX}.dll")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/styles/")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
-                "${QT_INSTALL_PATH}/plugins/styles/qwindowsvistastyle${DEBUG_SUFFIX}.dll"
+                "${QT_INSTALL_PATH}/plugins/styles/qmodernwindowsstyle${DEBUG_SUFFIX}.dll"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/styles/")
     endif ()
     if (EXISTS "${QT_INSTALL_PATH}/resources")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources/")
+    endif ()
 
-        foreach (QT_RESOURCES "icudtl.dat" "qtwebengine_devtools_resources.pak" "qtwebengine_resources.pak" "qtwebengine_resources_100p.pak" "qtwebengine_resources_200p.pak")
+    foreach (QT_RESOURCES "icudtl.dat" "qtwebengine_devtools_resources.pak" "qtwebengine_resources.pak" "qtwebengine_resources_100p.pak" "qtwebengine_resources_200p.pak" "v8_context_snapshot.bin" "v8_context_snapshot.debug.bin")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/resources/${QT_RESOURCES}"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources/${QT_RESOURCES}")
-            endforeach (QT_RESOURCES)
-    endif ()
+    endforeach (QT_RESOURCES)
+
     if (EXISTS "${QT_INSTALL_PATH}/translations/qtwebengine_locales")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory
@@ -75,13 +87,8 @@ if (WIN32)
                 "${QT_INSTALL_PATH}/translations/qtwebengine_locales/en-US.pak"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/translations/qtwebengine_locales/")
     endif ()
-    foreach (QT_RESOURCES "icudtl.dat" "qtwebengine_devtools_resources.pak" "qtwebengine_resources.pak" "qtwebengine_resources_100p.pak" "qtwebengine_resources_200p.pak")
-            add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy
-                    "${QT_INSTALL_PATH}/resources/${QT_RESOURCES}"
-                    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources/${QT_RESOURCES}")
-    endforeach (QT_RESOURCES)
-    foreach (QT_LIB Core Gui Widgets Quick WebEngineWidgets WebEngineCore OpenGL Network PrintSupport QuickWidgets QmlModels Qml WebChannel Positioning)
+
+    foreach (QT_LIB Core Gui Widgets Quick WebEngineWidgets WebEngineCore OpenGL Network PrintSupport QuickWidgets QmlModels QmlMeta QmlWorkerScript Qml WebChannel Positioning)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6${QT_LIB}${DEBUG_SUFFIX}.dll"
