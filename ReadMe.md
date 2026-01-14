@@ -39,8 +39,14 @@ Application requires:
 * **MSVC c++ compilator** (MSVC 2019+)
 * **Qt6.8**
   * Web engine addon
+  * Positioning addon
+  * WebChannel
 
 Application uses windows low level actions to catch keyboard events, that make MSVC is required.
+
+### Usage
+
+Run `simpleExamBroser.exe`. It shows browser on main screen and all others make black.
 
 ### Build
 
