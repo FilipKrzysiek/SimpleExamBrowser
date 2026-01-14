@@ -45,6 +45,7 @@ void Browser::setupWindowsGeometry() {
         auto *widgetScreen = new QWidget();
         widgetScreen->setGeometry(screen->geometry());
         widgetScreen->setStyleSheet("background-color:#000");
+        widgetScreen->setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
         widgetScreen->show();
         otherScreensWidget.push_back(widgetScreen);
     }

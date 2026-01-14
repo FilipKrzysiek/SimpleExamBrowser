@@ -24,6 +24,8 @@ add_executable(simpleExamBrowser main.cpp
         ui/browser.cpp
         ui/browser.h
         ui/browser.ui
+        src/WebView.cpp
+        src/WebView.h
 )
 
 target_link_libraries(simpleExamBrowser
@@ -34,6 +36,8 @@ target_link_libraries(simpleExamBrowser
         Qt::WebEngineCore
         guarder
 )
+
+target_include_directories(simpleExamBrowser PRIVATE src)
 
 if (WIN32)
     set(DEBUG_SUFFIX)
