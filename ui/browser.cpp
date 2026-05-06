@@ -10,6 +10,7 @@
 #include <QWebEngineProfile>
 
 #include "ui_browser.h"
+#include <QClipboard>
 
 
 Browser::Browser(QWidget *parent) :
@@ -45,6 +46,7 @@ void Browser::setupWindowsGeometry() {
         auto *widgetScreen = new QWidget();
         widgetScreen->setGeometry(screen->geometry());
         widgetScreen->setStyleSheet("background-color:#000");
+        widgetScreen->setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
         widgetScreen->show();
         otherScreensWidget.push_back(widgetScreen);
     }
@@ -77,6 +79,9 @@ void Browser::detectedForbiddenAction(enum DetectedAction action) {
 }
 
 void Browser::closeEvent(QCloseEvent *event) {
+    auto clipboard = QApplication::clipboard();
+    clipboard->clear();
+
     QWidget::closeEvent(event);
 
     for (auto *screen: otherScreensWidget) {

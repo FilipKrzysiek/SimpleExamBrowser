@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(simpleExamBrowser VERSION 0.1.0)
+project(simpleExamBrowser VERSION 0.2.0)
 
 add_subdirectory(src/guard)
 
@@ -24,6 +24,8 @@ add_executable(simpleExamBrowser main.cpp
         ui/browser.cpp
         ui/browser.h
         ui/browser.ui
+        src/WebView.cpp
+        src/WebView.h
 )
 
 target_link_libraries(simpleExamBrowser
@@ -34,6 +36,20 @@ target_link_libraries(simpleExamBrowser
         Qt::WebEngineCore
         guarder
 )
+
+if(WIN32)
+    configure_file(
+            ${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in
+            ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+            @ONLY
+    )
+
+    target_sources(simpleExamBrowser PRIVATE
+            ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+    )
+endif()
+
+target_include_directories(simpleExamBrowser PRIVATE src)
 
 if (WIN32)
     set(DEBUG_SUFFIX)

@@ -11,14 +11,14 @@ extern "C" {
 #include "src/guard/actionsProtector.h"
 }
 
-class CallbackForworder {
+class CallbackForwarder {
     static Browser *browser;
     static std::chrono::time_point<std::chrono::system_clock> lastCall;
     static int lastKeyCode;
 
 public:
-    explicit CallbackForworder(Browser *browser) {
-        CallbackForworder::browser = browser;
+    explicit CallbackForwarder(Browser *browser) {
+        CallbackForwarder::browser = browser;
     }
 
     static void call(enum DetectedAction action, int keyCode) {
@@ -35,9 +35,9 @@ public:
 
 //Maybe create tab where keep which keys are pressed and on keyup release it
 
-Browser* CallbackForworder::browser = nullptr;
-std::chrono::time_point<std::chrono::system_clock> CallbackForworder::lastCall = std::chrono::system_clock::now();
-int CallbackForworder::lastKeyCode = 0;
+Browser* CallbackForwarder::browser = nullptr;
+std::chrono::time_point<std::chrono::system_clock> CallbackForwarder::lastCall = std::chrono::system_clock::now();
+int CallbackForwarder::lastKeyCode = 0;
 
 
 int main(int argc, char *argv[]) {
@@ -48,8 +48,8 @@ int main(int argc, char *argv[]) {
 
     Browser browser;
 
-    CallbackForworder cf(&browser);
-    setActionFunction(CallbackForworder::call);
+    CallbackForwarder cf(&browser);
+    setActionFunction(CallbackForwarder::call);
 
     browser.setupWindowsGeometry();
     browser.show();
