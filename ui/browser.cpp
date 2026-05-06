@@ -10,6 +10,7 @@
 #include <QWebEngineProfile>
 
 #include "ui_browser.h"
+#include <QClipboard>
 
 
 Browser::Browser(QWidget *parent) :
@@ -78,6 +79,9 @@ void Browser::detectedForbiddenAction(enum DetectedAction action) {
 }
 
 void Browser::closeEvent(QCloseEvent *event) {
+    auto clipboard = QApplication::clipboard();
+    clipboard->clear();
+
     QWidget::closeEvent(event);
 
     for (auto *screen: otherScreensWidget) {
