@@ -41,12 +41,24 @@ int CallbackForwarder::lastKeyCode = 0;
 
 
 int main(int argc, char *argv[]) {
+    QSettings settings("./config.ini", QSettings::IniFormat);
+
+    QCoreApplication::setAttribute(Qt::AA_UseSoftwareOpenGL, settings.value("allowSoftwareOpenGl", false).toBool());
+
+    if (settings.value("forceUseOpenGl", false).toBool())
+        QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+
     initKeyboardGuard();
 
     QApplication a(argc, argv);
-    QSettings settings("./config.ini", QSettings::IniFormat);
+
+
 
     Browser browser;
+
+    QObject::connect(&browser, &Browser::disableGuarder, [] {
+        deinitKeyboardGuard();
+    });
 
     CallbackForwarder cf(&browser);
     setActionFunction(CallbackForwarder::call);

@@ -38,15 +38,23 @@ public:
 protected:
     void closeEvent(QCloseEvent *event) override;
 
+    void keyPressEvent(QKeyEvent *event) override;
+
+
 private:
     Ui::Browser *ui;
     QTimer updateTime;
+    QTimer closeActionTimer;
     QUrl baseUrl;
     QVector<QWidget*> otherScreensWidget;
     std::thread warningThread;
     QMessageBox warningMessageBox = QMessageBox(this);
+    QMessageBox* closeMessageBox;
+    bool isAlternateDispMode = false;
 
     int warningLevel = 0;
+
+    int closeActionCounter = 0;
 
     void setupUi();
 
@@ -60,6 +68,13 @@ private:
 
 private slots:
     void updateDataTime();
+
+    void closeApplication();
+
+    void createBlackScreen(const QRect &geom);
+
+signals:
+    void disableGuarder();
 };
 
 

@@ -276,22 +276,5 @@ QPushButton {
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>close</sender>
-   <signal>clicked()</signal>
-   <receiver>Browser</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>665</x>
-     <y>132</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>356</x>
-     <y>259</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
