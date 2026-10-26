@@ -152,6 +152,11 @@ void Browser::setupConnections() {
     connect(ui->homePage, &QPushButton::clicked, this, &Browser::openBaseUrlPage);
 
     connect(ui->close, &QPushButton::clicked, this, &Browser::closeApplication);
+
+    connect(ui->calculator, &QPushButton::clicked, [this] {
+        calculator.hide();
+        calculator.show();
+    });
 }
 
 void Browser::setupWarningWindow() {
@@ -175,6 +180,7 @@ void Browser::closeApplication() {
         otherScreen->hide();
     }
     hide();
+    calculator.close();
 
     emit disableGuarder();
 

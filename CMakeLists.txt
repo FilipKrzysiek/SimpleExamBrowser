@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(simpleExamBrowser VERSION 0.3.1)
+project(simpleExamBrowser VERSION 0.4.0)
 
 add_subdirectory(src/guard)
 
@@ -26,6 +26,9 @@ add_executable(simpleExamBrowser main.cpp
         ui/browser.ui
         src/WebView.cpp
         src/WebView.h
+        ui/calculator.cpp
+        ui/calculator.h
+        ui/calculator.ui
 )
 
 target_link_libraries(simpleExamBrowser

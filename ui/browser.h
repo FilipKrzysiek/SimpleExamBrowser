@@ -10,6 +10,7 @@
 #include <QUrl>
 #include <QWidget>
 #include <thread>
+#include "calculator.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -45,6 +46,7 @@ private:
     Ui::Browser *ui;
     QTimer updateTime;
     QTimer closeActionTimer;
+    Calculator calculator;
     QUrl baseUrl;
     QVector<QWidget*> otherScreensWidget;
     std::thread warningThread;

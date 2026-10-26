@@ -134,6 +134,52 @@ QPushButton {
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="calculator">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Reload page</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton:hover {
+	border-radius: 5px;
+	background-color: #333;
+}
+QPushButton {
+	background-color:#1f2532;
+}</string>
+        </property>
+        <property name="icon">
+         <iconset theme="accessories-calculator"/>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Orientation::Horizontal</enum>
