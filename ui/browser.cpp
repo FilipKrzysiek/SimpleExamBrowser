@@ -10,9 +10,9 @@
 #include <QWebEngineProfile>
 
 #include "ui_browser.h"
-#include <QClipboard>
 #include <QKeyEvent>
 
+#include <winrt/Windows.ApplicationModel.DataTransfer.h>
 
 Browser::Browser(QWidget *parent) : QWidget(parent), ui(new Ui::Browser) {
     ui->setupUi(this);
@@ -76,6 +76,14 @@ void Browser::detectedForbiddenAction(enum DetectedAction action) {
     warningThread.detach();
 }
 
+void Browser::allowCalculator(bool allow) const {
+    if (allow) {
+        ui->calculator->show();
+    } else {
+        ui->calculator->hide();
+    }
+}
+
 void Browser::closeEvent(QCloseEvent *event) {
     QWidget::closeEvent(event);
 
@@ -137,12 +145,16 @@ void Browser::setupUi() {
     setupIcons();
 
     setupWarningWindow();
+
+    ui->info->setToolTip(QString("Simple exam browser.\nCreated using Qt %1").arg(qVersion()));
 }
 
 void Browser::setupIcons() {
     ui->close->setIcon(QIcon(":/icons/close.png"));
     ui->reload->setIcon(QIcon(":/icons/refresh.png"));
     ui->homePage->setIcon(QIcon(":/icons/home.png"));
+    ui->calculator->setIcon(QIcon(":/icons/calculator.png"));
+    ui->info->setIcon(QIcon(":/icons/info.png"));
 }
 
 void Browser::setupConnections() {
@@ -184,29 +196,12 @@ void Browser::closeApplication() {
 
     emit disableGuarder();
 
-    closeMessageBox = new QMessageBox(QMessageBox::Information, tr("Zamykanie"),
-                                      tr("Trwa zamykanie aplikacji. Możesz robić inne rzeczy."), QMessageBox::NoButton,
-                                      this);
-    closeMessageBox->setStandardButtons(QMessageBox::NoButton);
-    closeMessageBox->show();
+    if (!winrt::Windows::ApplicationModel::DataTransfer::Clipboard::ClearHistory()) {
+        qWarning() << "Clipboard history wad not cleared!";
+    }
 
-    closeActionCounter = 0;
-
-    connect(&closeActionTimer, &QTimer::timeout, [this] {
-        if (closeActionCounter > 10) {
-            closeActionTimer.stop();
-
-            QApplication::clipboard()->clear();
-            close();
-            QApplication::quit();
-        } else {
-            QApplication::clipboard()->setText("Cleaning: " + QString::number(closeActionCounter));
-            ++closeActionCounter;
-        }
-    });
-
-    closeActionTimer.setSingleShot(false);
-    closeActionTimer.start(300);
+    close();
+    QApplication::quit();
 }
 
 void Browser::createBlackScreen(const QRect &geom) {

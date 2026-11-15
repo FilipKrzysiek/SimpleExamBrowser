@@ -36,6 +36,12 @@ public:
 
     void detectedForbiddenAction(enum DetectedAction action);
 
+    /**
+     * Changing visibility of calculator icon. Default visible
+     * @param allow if set false icon to open calclulator will be hidden
+     */
+    void allowCalculator(bool allow) const;
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 
@@ -45,18 +51,14 @@ protected:
 private:
     Ui::Browser *ui;
     QTimer updateTime;
-    QTimer closeActionTimer;
     Calculator calculator;
     QUrl baseUrl;
     QVector<QWidget*> otherScreensWidget;
     std::thread warningThread;
     QMessageBox warningMessageBox = QMessageBox(this);
-    QMessageBox* closeMessageBox;
     bool isAlternateDispMode = false;
 
     int warningLevel = 0;
-
-    int closeActionCounter = 0;
 
     void setupUi();
 

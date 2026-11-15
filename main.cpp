@@ -67,6 +67,7 @@ int main(int argc, char *argv[]) {
     browser.show();
 
     browser.setBaseUrl(settings.value("baseUrl", "https://www.pk.edu.pl/").toString());
+    browser.allowCalculator(settings.value("allowCalculator", true).toBool());
     browser.openBaseUrlPage();
     auto res = QApplication::exec();
 
