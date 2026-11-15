@@ -3,5 +3,7 @@
         <file>icons/close.png</file>
         <file>icons/refresh.png</file>
         <file>icons/home.png</file>
+        <file>icons/calculator.png</file>
+        <file>icons/info.png</file>
     </qresource>
 </RCC>
