@@ -33,6 +33,8 @@ public:
     }
 };
 
+void showInfoMessageBox();
+
 //Maybe create tab where keep which keys are pressed and on keyup release it
 
 Browser* CallbackForwarder::browser = nullptr;
@@ -52,7 +54,7 @@ int main(int argc, char *argv[]) {
 
     QApplication a(argc, argv);
 
-
+    showInfoMessageBox();
 
     Browser browser;
 
@@ -74,4 +76,16 @@ int main(int argc, char *argv[]) {
     deinitKeyboardGuard();
 
     return res;
+}
+
+void showInfoMessageBox() {
+    //TODO add translations
+    auto* messageBox = new QMessageBox();
+    messageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+    messageBox->setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint);
+    messageBox->setWindowTitle("Informacja");
+    messageBox->setIcon(QMessageBox::Information);
+    messageBox->setText("Przeglądarka ta nie zapisuje żadnych informacji, możesz bezpiecznie z niej korzystać.\nPrzeglądarka jedynie utrudnia korzystanie z dodatkowych materiałów.");
+    messageBox->setStandardButtons(QMessageBox::Ok);
+    messageBox->show();
 }
