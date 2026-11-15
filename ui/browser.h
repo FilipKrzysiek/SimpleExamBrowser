@@ -10,6 +10,7 @@
 #include <QUrl>
 #include <QWidget>
 #include <thread>
+#include "calculator.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -35,16 +36,27 @@ public:
 
     void detectedForbiddenAction(enum DetectedAction action);
 
+    /**
+     * Changing visibility of calculator icon. Default visible
+     * @param allow if set false icon to open calclulator will be hidden
+     */
+    void allowCalculator(bool allow) const;
+
 protected:
     void closeEvent(QCloseEvent *event) override;
+
+    void keyPressEvent(QKeyEvent *event) override;
+
 
 private:
     Ui::Browser *ui;
     QTimer updateTime;
+    Calculator calculator;
     QUrl baseUrl;
     QVector<QWidget*> otherScreensWidget;
     std::thread warningThread;
     QMessageBox warningMessageBox = QMessageBox(this);
+    bool isAlternateDispMode = false;
 
     int warningLevel = 0;
 
@@ -60,6 +72,13 @@ private:
 
 private slots:
     void updateDataTime();
+
+    void closeApplication();
+
+    void createBlackScreen(const QRect &geom);
+
+signals:
+    void disableGuarder();
 };
 
 

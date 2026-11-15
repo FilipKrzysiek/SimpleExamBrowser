@@ -33,6 +33,8 @@ public:
     }
 };
 
+void showInfoMessageBox();
+
 //Maybe create tab where keep which keys are pressed and on keyup release it
 
 Browser* CallbackForwarder::browser = nullptr;
@@ -41,12 +43,24 @@ int CallbackForwarder::lastKeyCode = 0;
 
 
 int main(int argc, char *argv[]) {
+    QSettings settings("./config.ini", QSettings::IniFormat);
+
+    QCoreApplication::setAttribute(Qt::AA_UseSoftwareOpenGL, settings.value("allowSoftwareOpenGl", false).toBool());
+
+    if (settings.value("forceUseOpenGl", false).toBool())
+        QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+
     initKeyboardGuard();
 
     QApplication a(argc, argv);
-    QSettings settings("./config.ini", QSettings::IniFormat);
+
+    showInfoMessageBox();
 
     Browser browser;
+
+    QObject::connect(&browser, &Browser::disableGuarder, [] {
+        deinitKeyboardGuard();
+    });
 
     CallbackForwarder cf(&browser);
     setActionFunction(CallbackForwarder::call);
@@ -55,10 +69,23 @@ int main(int argc, char *argv[]) {
     browser.show();
 
     browser.setBaseUrl(settings.value("baseUrl", "https://www.pk.edu.pl/").toString());
+    browser.allowCalculator(settings.value("allowCalculator", true).toBool());
     browser.openBaseUrlPage();
     auto res = QApplication::exec();
 
     deinitKeyboardGuard();
 
     return res;
+}
+
+void showInfoMessageBox() {
+    //TODO add translations
+    auto* messageBox = new QMessageBox();
+    messageBox->setAttribute(Qt::WA_DeleteOnClose, true);
+    messageBox->setWindowFlags(Qt::Window | Qt::WindowStaysOnTopHint);
+    messageBox->setWindowTitle("Informacja");
+    messageBox->setIcon(QMessageBox::Information);
+    messageBox->setText("Przeglądarka ta nie zapisuje żadnych informacji, możesz bezpiecznie z niej korzystać.\nPrzeglądarka jedynie utrudnia korzystanie z dodatkowych materiałów.");
+    messageBox->setStandardButtons(QMessageBox::Ok);
+    messageBox->show();
 }

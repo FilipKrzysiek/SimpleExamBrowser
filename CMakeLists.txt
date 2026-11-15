@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(simpleExamBrowser VERSION 0.2.0)
+project(simpleExamBrowser VERSION 0.5.0)
 
 add_subdirectory(src/guard)
 
@@ -9,7 +9,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS
+find_package(Qt6 REQUIRED
         Core
         Gui
         Widgets
@@ -26,6 +26,9 @@ add_executable(simpleExamBrowser main.cpp
         ui/browser.ui
         src/WebView.cpp
         src/WebView.h
+        ui/calculator.cpp
+        ui/calculator.h
+        ui/calculator.ui
 )
 
 target_link_libraries(simpleExamBrowser
@@ -35,6 +38,7 @@ target_link_libraries(simpleExamBrowser
         Qt::WebEngineWidgets
         Qt::WebEngineCore
         guarder
+        windowsapp
 )
 
 if(WIN32)
@@ -56,13 +60,23 @@ if (WIN32)
     if (MSVC AND CMAKE_BUILD_TYPE MATCHES "Debug")
         set(DEBUG_SUFFIX "d")
     endif ()
-    set(QT_INSTALL_PATH "${CMAKE_PREFIX_PATH}")
+
+    if (CMAKE_PREFIX_PATH MATCHES "")
+        get_target_property(QT_CORE_LOCATION Qt6::Core LOCATION)
+        get_filename_component(QT_BIN_DIR "${QT_CORE_LOCATION}" DIRECTORY)
+        set(QT_INSTALL_PATH "${QT_BIN_DIR}/..")
+    else()
+        set(QT_INSTALL_PATH "${CMAKE_PREFIX_PATH}")
+    endif()
+
     if (NOT EXISTS "${QT_INSTALL_PATH}/bin")
         set(QT_INSTALL_PATH "${QT_INSTALL_PATH}/..")
         if (NOT EXISTS "${QT_INSTALL_PATH}/bin")
             set(QT_INSTALL_PATH "${QT_INSTALL_PATH}/..")
         endif ()
     endif ()
+    message("Qt install path: " ${QT_INSTALL_PATH})
+
     if (EXISTS "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll")
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E make_directory
